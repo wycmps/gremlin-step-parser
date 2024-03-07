@@ -30,18 +30,21 @@ object RichGraphTraversalParser
     with EndStepParser
     with PathFilterStepParser
     with PathStepParser
-    with UnfoldStepParser {
+    with UnfoldStepParser
+    with AndStepParser {
 
   private def traversalFilterStep: Parser[QStep] = traversalFilterStepDelegate(
+    stepParser
+  )
+  private def orderGlobalStep: Parser[QStep] = orderGlobalStepDelegate(
     stepParser
   )
   private def repeatStep: Parser[QStep] = repeatStepDelegate(stepParser)
   private def groupStep: Parser[QStep] = groupStepDelegate(stepParser)
   private def orStep: Parser[QStep] = orStepDelegate(stepParser)
-  private def traversalMapStep: Parser[QStep] = traversalMapStepDelegate(
-    stepParser
-  )
+  private def traversalMapStep: Parser[QStep] = traversalMapStepDelegate(stepParser)
   private def unionStep: Parser[QStep] = unionStepDelegate(stepParser)
+  private def andStep: Parser[QStep] = andStepDelegate(stepParser)
 
   private def stepParser: Parser[QStep] =
     graphStep | hasStep | vertexStep | traversalFilterStep |
@@ -49,7 +52,7 @@ object RichGraphTraversalParser
       repeatEndStep | sideEffectCapStep | groupStep | propertiesStep |
       foldStep | projectStep | lambdaMapStep | injectStep |
       orStep | selectOneStep | traversalMapStep | unionStep | endStep |
-      pathFilterStep | pathStep | unfoldStep
+      pathFilterStep | pathStep | unfoldStep | andStep
 
   def root: Parser[Seq[QStep]] =
     "[" ~> repsep(stepParser, ",") <~ "]" ^^ (_steps => _steps)

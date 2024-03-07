@@ -19,8 +19,7 @@ private[parser] case class QueryRaw(
     hasStepSeparator: Boolean = false
 ) extends Query {
   def toLines: Seq[String] = Seq(
-    line(s"${if (hasReceiver) s"__" else ""}$raw${if (hasStepSeparator) s","
-      else ""}")
+    line(s"${if (hasReceiver) s"__" else ""}$raw${if (hasStepSeparator) s"," else ""}")
   )
   def withReceiver(): Query = copy(hasReceiver = true)
   def withStepSeparator(): Query = copy(hasStepSeparator = true)
